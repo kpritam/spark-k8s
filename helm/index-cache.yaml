@@ -1,0 +1,20 @@
+apiVersion: v1
+entries:
+  kpritam-transform-movie-ratings:
+  - apiVersion: v1
+    appVersion: "0.1"
+    created: "2021-01-18T14:25:20.599146316Z"
+    description: Sample ETL Job for Medium Post
+    digest: 8923a405bfe686a65df2915314b947023b760641fd4561d45041a66bf74e5da0
+    home: http://github.com/kpritam/spark-k8s
+    maintainers:
+    - email: phkadam2008@gmail.com
+      name: Pritam Kadam
+    name: kpritam-transform-movie-ratings
+    sources:
+    - https://github.com/kpritam/spark-k8s
+    urls:
+    - charts/kpritam-transform-movie-ratings-0.1.tgz
+    version: "0.1"
+generated: "2021-01-18T14:25:21Z"
+serverInfo: {}

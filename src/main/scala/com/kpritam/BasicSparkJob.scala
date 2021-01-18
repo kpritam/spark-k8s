@@ -1,14 +1,11 @@
-package xyz.graphiq
+package com.kpritam
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
-import xyz.graphiq.model._
+import com.kpritam.model._
+import sys.process._
 
-/**
-  * Created by Tom Lous on 2019-10-20.
-  * Copyright © 2019 GraphIQ.
-  */
 object BasicSparkJob extends App {
 
   val spark: SparkSession = SparkSession
@@ -27,12 +24,10 @@ object BasicSparkJob extends App {
 
   println(s"Reading data from $inputPath")
 
-
   // define movie dataset
   val movieSchema = Encoders.product[Movie].schema
 
-  val moviesDataset = spark
-    .read
+  val moviesDataset = spark.read
     .option("header", true)
     .schema(movieSchema)
     .csv(s"$inputPath/movies.csv")
@@ -41,13 +36,11 @@ object BasicSparkJob extends App {
   // define rating dataset
   val ratingSchema = Encoders.product[Rating].schema
 
-  val ratingDataset = spark
-    .read
+  val ratingDataset = spark.read
     .option("header", true)
     .schema(ratingSchema)
     .csv(s"$inputPath/ratings.csv")
     .as[Rating]
-
 
   // combine and group and save
   val combined = ratingDataset
@@ -68,10 +61,8 @@ object BasicSparkJob extends App {
     .mode(SaveMode.Overwrite)
     .parquet(s"$outputPath/movie-ratings")
 
-
   println("Done")
 
   spark.stop()
-
 
 }

@@ -12,4 +12,4 @@ cd output
 
 export HELM_REPO_USE_HTTP="true"
 helm repo add chartmuseum http://$(minikube ip):8080
-helm push  --force ${name}/ chartmuseum
+helm push --force ${name}/ chartmuseum

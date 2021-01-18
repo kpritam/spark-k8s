@@ -6,3 +6,6 @@ target/
 *.iml
 dataset/
 output/
+.metals
+.bloop
+.vscode

@@ -2,22 +2,32 @@ environment: minikube
 serviceAccount: spark-spark
 imageRegistry: localhost:5000
 arguments:
-  - "/mnt/data-in/"
-  - "/mnt/data-out/"
+  - "/tmp/data-in/"
+  - "/tmp/data-out/"
 volumes:
   - name: input-data
     hostPath:
-      path: /input-data
+      path: /tmp/data-in/
   - name: output-data
     hostPath:
-      path: /output-data
+      path: /tmp/data-out/
 mounts:
-  input-data: /mnt/data-in
-  output-data: /mnt/data-out
+  input-data: /tmp/data-in/
+  output-data: /tmp/data-out/
 driver:
+  volumeMounts:
+    - name: input-data
+      mountPath: /tmp/data-in/
+    - name: output-data
+      mountPath: /tmp/data-out/
   cores: 1
   memory: "2g"
 executor:
+  volumeMounts:
+    - name: input-data
+      mountPath: /tmp/data-in/
+    - name: output-data
+      mountPath: /tmp/data-out/
   instances: 2
   cores: 1
   memory: "1g"

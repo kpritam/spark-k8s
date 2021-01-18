@@ -1,0 +1,101 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: movie-ratings-transform-driver
+  namespace: spark-apps
+spec:
+  volumes:
+    - name: spark-local-dir-1
+      emptyDir: {}
+    - name: spark-conf-volume
+      configMap:
+        name: movie-ratings-transform-2f1fe37715e3df7d-driver-conf-map
+        defaultMode: 420
+    - name: spark-spark-token-kgsdw
+      secret:
+        secretName: spark-spark-token-kgsdw
+        defaultMode: 420
+    - name: input-data
+      hostPath:
+        path: /tmp/data-in/
+    - name: output-data
+      hostPath:
+        path: /tmp/data-out/
+  containers:
+    - name: spark-kubernetes-driver
+      image: "localhost:5000/kpritam/transform-movie-ratings:0.1"
+      args:
+        - driver
+        - "--properties-file"
+        - /opt/spark/conf/spark.properties
+        - "--class"
+        - com.kpritam.BasicSparkJob
+        - "local:///opt/spark/jars/kpritam-transform-movie-ratings.jar"
+        - /tmp/data-in/
+        - /tmp/data-out/
+      ports:
+        - name: driver-rpc-port
+          containerPort: 7078
+          protocol: TCP
+        - name: blockmanager
+          containerPort: 7079
+          protocol: TCP
+        - name: spark-ui
+          containerPort: 4040
+          protocol: TCP
+      env:
+        - name: SPARK_USER
+          value: root
+        - name: SPARK_APPLICATION_ID
+          value: spark-8008460445c34cb5843878b6b2c917de
+        - name: SPARK_DRIVER_BIND_ADDRESS
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: SPARK_LOCAL_DIRS
+          value: /var/data/spark-f788b835-635f-4196-a548-a038d04050b0
+        - name: SPARK_CONF_DIR
+          value: /opt/spark/conf
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2432Mi
+        requests:
+          cpu: "1"
+          memory: 2432Mi
+      volumeMounts:
+        - name: spark-local-dir-1
+          mountPath: /var/data/spark-f788b835-635f-4196-a548-a038d04050b0
+        - name: spark-conf-volume
+          mountPath: /opt/spark/conf
+        - name: spark-spark-token-kgsdw
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        - name: input-data
+          mountPath: /tmp/data-in/
+        - name: output-data
+          mountPath: /tmp/data-out/
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      imagePullPolicy: Never
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: ClusterFirst
+  serviceAccountName: spark-spark
+  serviceAccount: spark-spark
+  nodeName: minikube
+  securityContext: {}
+  schedulerName: default-scheduler
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+  priority: 0
+  enableServiceLinks: true
+  preemptionPolicy: PreemptLowerPriority

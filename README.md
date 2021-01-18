@@ -4,7 +4,7 @@ Repository accompanying the article on Medium:
 
 [http://bit.ly/spark-k8s](http://bit.ly/spark-k8s)
 
-## Intro: 
+## Intro
 
 For each challenge there are many technology stacks that can provide the solution. I’m not claiming this approach is the holy grail of data processing, but this more the tale of my quest to combine tools that are widely supported in a maintainable fashion.
 From the onset I’ve always tried to generate as much configuration as possible, because I’ve experienced it’s easy to drown in a sea of yaml-files, conf-files and incompatible versions in registries, repositories, CI/CD pipelines and deployments.

@@ -1,0 +1,51 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: kpritam-transform-movie-ratings
+  namespace: spark-apps
+spec:
+  type: Scala
+  mode: cluster
+  image: "kpritam/transform-movie-ratings:0.8"
+  imagePullPolicy: Never
+  imageRegistry: localhost:5000
+  mainClass: com.kpritam.BasicSparkJob
+  mainApplicationFile: "local:///opt/spark/jars/kpritam-transform-movie-ratings.jar"
+  arguments:
+    - "/opt/data-in/"
+    - "/opt/data-out/"
+  sparkVersion: "3.0.0"
+  restartPolicy:
+    type: Never
+  volumes:
+    - name: "input-data"
+      hostPath:
+        path: "/input-data"
+        type: Directory
+    - name: "output-data"
+      hostPath:
+        path: "/output-data"
+        type: Directory
+  driver:
+    cores: 1
+    memory: "2g"
+    labels:
+      version: "0.4"
+    serviceAccount: spark-spark
+    volumeMounts:
+      - name: "input-data"
+        mountPath: "/opt/data-in"
+      - name: "output-data"
+        mountPath: "/opt/data-out"
+  executor:
+    cores: 1
+    instances: 2
+    memory: "1g"
+    labels:
+      version: "0.4"
+    serviceAccount: spark-spark
+    volumeMounts:
+      - name: "input-data"
+        mountPath: "/opt/data-in"
+      - name: "output-data"
+        mountPath: "/opt/data-out"
